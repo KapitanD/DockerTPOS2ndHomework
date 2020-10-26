@@ -1,0 +1,63 @@
+version: "3.8"
+
+networks:
+    default:
+      driver: bridge
+    myvlan:
+      driver: macvlan
+      driver_opts:
+        parent: enp1s0f1 # on my machine, neet to be configured
+      ipam:
+        driver: default
+        config:
+          - subnet: "172.19.0.0/16" # on my machine, need to be configured
+
+services:
+  db:
+    build: db/
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      myvlan:
+        aliases:
+          - db.local
+
+  initdb:
+    build: initdb/
+    environment:
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db.local
+    command: "python3 init.py"
+    volumes:
+      - ./initdb/data:/initdb/data:ro
+    depends_on:
+      - db
+    networks:
+      myvlan:
+        aliases:
+          - initdb.local
+
+  rest_api:
+    build: rest_api/
+    environment:
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db.local
+    command: "python3 rest_api.py"
+    depends_on:
+      - db
+      - initdb
+    ports:
+      - 1234:1234
+    networks:
+      myvlan:
+        aliases:
+          - rest_api.local
+      default:
+        aliases:
+            - rest_api.out

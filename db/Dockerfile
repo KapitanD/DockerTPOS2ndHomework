@@ -1,0 +1,2 @@
+FROM postgres
+WORKDIR /db/
