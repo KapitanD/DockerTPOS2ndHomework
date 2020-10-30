@@ -7,12 +7,14 @@ from contextlib import closing
 import time
 
 
-DB_NAME = os.getenv('DB_NAME')
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_HOST = os.getenv('DB_HOST')
+DB_NAME = os.getenv('POSTGRES_DB')
+DB_USER = os.getenv('POSTGRES_USER')
+DB_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+DB_HOST = os.getenv('DB_LOCAL')
+INITDB_DATA_FOLDER = os.getenv('INITDB_DATA_FOLDER')
+INITDB_DATA_FILENAME = os.getenv('INITDB_DATA_FILENAME')
 
-with open('./data/data.csv') as data_file:
+with open(os.path.join(INITDB_DATA_FOLDER, INITDB_DATA_FILENAME)) as data_file:
     reader = csv.reader(data_file, delimiter=';')
     while True:
         try:

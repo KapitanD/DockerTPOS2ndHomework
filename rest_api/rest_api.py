@@ -6,10 +6,12 @@ from contextlib import closing
 import time
 import os
 
-DB_NAME = os.getenv('DB_NAME')
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_HOST = os.getenv('DB_HOST')
+DB_NAME = os.getenv('POSTGRES_DB')
+DB_USER = os.getenv('POSTGRES_USER')
+DB_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+DB_HOST = os.getenv('DB_LOCAL')
+REST_API_GLOBAL = os.getenv('REST_API_GLOBAL')
+REST_API_LOCAL_PORT = os.getenv('REST_API_LOCAL_PORT')
 
 app = Flask(__name__)
 
@@ -52,4 +54,4 @@ def hello_health():
 
 
 if __name__ == '__main__':
-    app.run(host="rest_api.out", port=1234)
+    app.run(host=REST_API_GLOBAL, port=REST_API_LOCAL_PORT)
