@@ -35,18 +35,13 @@ with open(os.path.join(INITDB_DATA_FOLDER, INITDB_DATA_FILENAME)) as data_file:
                         number_field       integer
                     );""")
             values = [(row[0], row[1]) for row in reader]
-            for row in reader:
-                cursor.execute(f"""
-                INSERT INTO data(str_field, number_field)
-                VALUES({row[0]}, {row[1]})
-                ;""")
             insert = sql.SQL('INSERT INTO data (str_field, number_field) VALUES {}').format(
                              sql.SQL(',').join(map(sql.Literal, values)))
             cursor.execute(insert)
             cursor.execute("SELECT * from data;")
             is_okay = True
             for response_row, request_row in zip(cursor, values):
-                if response_row['str_field'] != request_row[0] and response_row['nimber_field'] == request_row[1]:
+                if response_row['str_field'] != request_row[0] or response_row['number_field'] == request_row[1]:
                     is_okay = False
 
             if is_okay:

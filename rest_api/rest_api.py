@@ -15,16 +15,6 @@ REST_API_LOCAL_PORT = os.getenv('REST_API_LOCAL_PORT')
 
 app = Flask(__name__)
 
-# waiting for postgresql db
-while True:
-    try:
-        psycopg2.connect(dbname=DB_NAME, user=DB_USER,
-                         password=DB_PASSWORD, host=DB_HOST)
-        break
-    except psycopg2.OperationalError:
-        time.sleep(1)
-
-
 @app.errorhandler(404)
 def page_not_found(e):
     return app.response_class(
@@ -54,4 +44,13 @@ def hello_health():
 
 
 if __name__ == '__main__':
+    # waiting for postgresql db
+    while True:
+        try:
+            psycopg2.connect(dbname=DB_NAME, user=DB_USER,
+                            password=DB_PASSWORD, host=DB_HOST)
+            break
+        except psycopg2.OperationalError:
+            time.sleep(1)
+
     app.run(host=REST_API_GLOBAL, port=REST_API_LOCAL_PORT)
